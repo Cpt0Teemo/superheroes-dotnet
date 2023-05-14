@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
+using Functional.Option;
 using Microsoft.AspNetCore.Mvc;
+using Superheroes.Model;
 
 namespace Superheroes.Controllers
 {
@@ -7,8 +9,6 @@ namespace Superheroes.Controllers
     public class BattleController : Controller
     {
         private readonly ICharactersProvider _charactersProvider;
-        private static CharacterResponse _character1;
-        private static CharacterResponse _character2;
 
         public BattleController(ICharactersProvider charactersProvider)
         {
@@ -18,25 +18,27 @@ namespace Superheroes.Controllers
         public async Task<IActionResult> Get(string hero, string villain)
         {
             var characters = await _charactersProvider.GetCharacters();
+            Option<Character> heroOption = Option.None;
+            Option<Character> villainOption = Option.None;
             
-            foreach(var character in characters.Items)
+            foreach(var character in characters)
             {
-                if(character.Name == hero)
-                {
-                    _character1 = character;
-                }
-                if(character.Name == villain)
-                {
-                    _character2 = character;
-                }
+                if (heroOption.HasValue && villainOption.HasValue) break;
+
+                if (character.Name == hero)
+                    heroOption = character;
+                else if (character.Name == villain)
+                    villainOption = character;
             }
 
-            if(_character1.Score > _character2.Score)
-            {
-                return Ok(_character1);
-            }
+            if (!heroOption.HasValue || !villainOption.HasValue) return NotFound();
+            if (heroOption.Value.Type != CharacterType.Hero) return BadRequest();
+            if (villainOption.Value.Type != CharacterType.Villain) return BadRequest();
 
-            return Ok(_character2);
+            return heroOption.Value.Score > villainOption.Value.Score
+                ? Ok(CharacterResponse.FromCharacter(heroOption.Value))
+                : Ok(CharacterResponse.FromCharacter(villainOption.Value));
+
         }
     }
 }
