@@ -32,13 +32,15 @@ public class GetShould
                 {
                     Name = "Superman",
                     Score = 8.2,
-                    Type = CharacterType.Hero
+                    Type = CharacterType.Hero,
+                    Weakness = "SupermanFailedDestroyer"
                 },
                 new Character
                 {
                     Name = "WonderWoman",
                     Score = 7.2,
-                    Type = CharacterType.Hero
+                    Type = CharacterType.Hero,
+                    Weakness = "WonderWomanDestroyer"
                 },
                 new Character
                 {
@@ -48,12 +50,24 @@ public class GetShould
                 },
                 new Character
                 {
+                    Name = "WonderWomanDestroyer",
+                    Score = 6.5,
+                    Type = CharacterType.Villain
+                }, new Character
+                {
+                Name = "SupermanFailedDestroyer",
+                Score = 7.1,
+                Type = CharacterType.Villain
+                },
+                new Character
+                {
                     Name = "Penguin",
                     Score = 7.1,
                     Type = CharacterType.Villain
                 }
             
         };
+        
         _mockCharactersProvider = new Mock<ICharactersProvider>();
         _mockCharactersProvider
             .Setup(provider => provider.GetCharacters())
@@ -143,6 +157,28 @@ public class GetShould
         var response = await _client.GetAsync(URI(hero, villain));
 
         await AssertIsOkWithCharacter(response, villain);
+    }
+    
+    [Fact]
+    public async Task ShouldRemove1ScoreIfWeakness()
+    {
+        const string hero = "WonderWoman";
+        const string villain = "WonderWomanDestroyer";
+
+        var response = await _client.GetAsync(URI(hero, villain));
+
+        await AssertIsOkWithCharacter(response, villain);
+    }
+    
+    [Fact]
+    public async Task ShouldRemoveOnly1ScoreIfWeakness()
+    {
+        const string hero = "Superman";
+        const string villain = "SupermanFailedDestroyer";
+
+        var response = await _client.GetAsync(URI(hero, villain));
+
+        await AssertIsOkWithCharacter(response, hero);
     }
 
     private string URI(string hero, string villain) => $"battle?hero={hero}&villain={villain}";

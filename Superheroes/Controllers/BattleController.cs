@@ -35,7 +35,11 @@ namespace Superheroes.Controllers
             if (heroOption.Value.Type != CharacterType.Hero) return BadRequest();
             if (villainOption.Value.Type != CharacterType.Villain) return BadRequest();
 
-            return heroOption.Value.Score > villainOption.Value.Score
+            double heroScore = heroOption.Value.Score, villainScore = villainOption.Value.Score;
+            if (heroOption.Value.Weakness == villain) heroScore--;
+            if (villainOption.Value.Weakness == hero) villainScore--;
+
+            return heroScore > villainScore
                 ? Ok(CharacterResponse.FromCharacter(heroOption.Value))
                 : Ok(CharacterResponse.FromCharacter(villainOption.Value));
 
