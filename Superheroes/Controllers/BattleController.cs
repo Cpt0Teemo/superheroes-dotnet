@@ -37,7 +37,7 @@ namespace Superheroes.Controllers
 
             double heroScore = heroOption.Value.Score, villainScore = villainOption.Value.Score;
             if (heroOption.Value.Weakness == villain) heroScore--;
-            if (villainOption.Value.Weakness == villain) villainScore--;
+            if (villainOption.Value.Weakness == hero) villainScore--;
 
             return heroScore > villainScore
                 ? Ok(CharacterResponse.FromCharacter(heroOption.Value))
