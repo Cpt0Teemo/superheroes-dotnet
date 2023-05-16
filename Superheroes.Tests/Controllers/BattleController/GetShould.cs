@@ -70,7 +70,7 @@ public class GetShould
         
         _mockCharactersProvider = new Mock<ICharactersProvider>();
         _mockCharactersProvider
-            .Setup(provider => provider.GetCharacters())
+            .Setup(provider => provider.GetCharactersAsync())
             .ReturnsAsync(mockResponse);
         var startup = new WebHostBuilder()
             .UseStartup<Startup>()

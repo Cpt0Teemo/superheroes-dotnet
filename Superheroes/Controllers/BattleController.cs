@@ -17,7 +17,7 @@ namespace Superheroes.Controllers
 
         public async Task<IActionResult> Get(string hero, string villain)
         {
-            var characters = await _charactersProvider.GetCharacters();
+            var characters = await _charactersProvider.GetCharactersAsync();
             Option<Character> heroOption = Option.None;
             Option<Character> villainOption = Option.None;
             
