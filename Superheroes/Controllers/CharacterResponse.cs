@@ -9,7 +9,7 @@ namespace Superheroes
         public string Type { get; set; }
         
         public static CharacterResponse FromCharacter(Character character) =>
-            new CharacterResponse()
+            new ()
             {
                 Name = character.Name,
                 Score = character.Score,
