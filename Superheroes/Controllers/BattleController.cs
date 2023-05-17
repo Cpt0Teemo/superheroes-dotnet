@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Functional.Option;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,9 @@ namespace Superheroes.Controllers
             {
                 if (heroOption.HasValue && villainOption.HasValue) break;
 
-                if (character.Name == hero)
+                if (character.Name.Equals(hero, StringComparison.OrdinalIgnoreCase))
                     heroOption = character;
-                else if (character.Name == villain)
+                else if (character.Name.Equals(villain, StringComparison.OrdinalIgnoreCase))
                     villainOption = character;
             }
 

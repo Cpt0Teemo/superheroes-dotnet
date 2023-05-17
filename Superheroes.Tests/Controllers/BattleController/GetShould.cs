@@ -53,6 +53,13 @@ public class GetShould
                     Name = "WonderWomanDestroyer",
                     Score = 6.5,
                     Type = CharacterType.Villain
+                },
+                new Character
+                {
+                    Name = "WonderWomanWeaknessVillain",
+                    Score = 8.1,
+                    Type = CharacterType.Villain,
+                    Weakness = "WonderWoman"
                 }, new Character
                 {
                 Name = "SupermanFailedDestroyer",
@@ -149,6 +156,17 @@ public class GetShould
     }
     
     [Fact]
+    public async Task ShouldReturnIgnoreStringCasing()
+    {
+        const string hero = "BatMan";
+        const string villain = "JOKer";
+
+        var response = await _client.GetAsync(URI(hero, villain));
+
+        await AssertIsOkWithCharacter(response, "Batman");
+    }
+    
+    [Fact]
     public async Task ShouldReturnVillainWhenEquallyStrong()
     {
         const string hero = "Superman";
@@ -160,7 +178,7 @@ public class GetShould
     }
     
     [Fact]
-    public async Task ShouldRemove1ScoreIfWeakness()
+    public async Task ShouldRemove1HeroScoreIfWeakness()
     {
         const string hero = "WonderWoman";
         const string villain = "WonderWomanDestroyer";
@@ -168,6 +186,17 @@ public class GetShould
         var response = await _client.GetAsync(URI(hero, villain));
 
         await AssertIsOkWithCharacter(response, villain);
+    }
+    
+    [Fact]
+    public async Task ShouldRemove1VillainScoreIfWeakness()
+    {
+        const string hero = "WonderWoman";
+        const string villain = "WonderWomanWeaknessVillain";
+
+        var response = await _client.GetAsync(URI(hero, villain));
+
+        await AssertIsOkWithCharacter(response, hero);
     }
     
     [Fact]
